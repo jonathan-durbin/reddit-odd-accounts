@@ -1,6 +1,7 @@
 *.txt
 *.json
 *.csv
+*.db
 data
 .vscode
 __pycache__
