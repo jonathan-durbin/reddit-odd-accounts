@@ -2,6 +2,7 @@
 *.json
 *.csv
 *.db
+*.html
 data
 .vscode
 __pycache__
