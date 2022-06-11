@@ -2,6 +2,7 @@
 *.json
 *.csv
 *.db
+*.db.backup
 *.html
 *.ini
 data
