@@ -29,7 +29,7 @@ def user_is_removed(redditor):
         or
         (hasattr(redditor, 'is_suspended') and redditor.is_suspended == True)
     ):
-        print(f'########{username} IS A BLOCKED/SUSPENDED ACCOUNT##########')
+        print(f'########{redditor.name} IS A BLOCKED/SUSPENDED ACCOUNT##########')
         return True
     else:
         return False
