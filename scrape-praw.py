@@ -5,10 +5,11 @@ import datetime as dt
 
 # set up logging
 handler = logging.StreamHandler()
-handler.setLevel(logging.DEBUG)
+logging_level = logging.Info
+handler.setLevel(logging_level)
 for logger_name in ("praw", "prawcore"):
     logger = logging.getLogger(logger_name)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging_level)
     logger.addHandler(handler)
 
 
