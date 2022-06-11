@@ -114,8 +114,6 @@ conn.execute(
 )
 conn.commit()
 
-postids = [i[0] for i in conn.execute('select postid from post').fetchall()]
-
 usernames = [i[0] for i in conn.execute(
     '''
         select distinct username 
@@ -140,8 +138,6 @@ for username in usernames:
 ######### BEGINNING LOOP FOR u/{username:<20} ################
 ######### PROGRESS: {progress_bar(usernames, username, 'X', 31)} ################''')
     for post in redditor.submissions.new():
-        # if post.fullname in postids: 
-        #     continue
         conn.execute('''
             insert or ignore into post (
                 postid, author, submitted_at, post_type, post_parent,
@@ -162,8 +158,6 @@ for username in usernames:
         if post.num_comments == 0: 
             continue
         for comment in post.comments.list():
-            # if comment.fullname in postids:
-            #     continue
             if user_is_removed(comment.author):
                 continue
             conn.execute('''
