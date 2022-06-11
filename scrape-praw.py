@@ -29,6 +29,17 @@ assert reddit.user.me() == lines[2]
 def timestamp_to_datetime(t):
     return dt.datetime.fromtimestamp(t).isoformat()
 
+def user_is_removed(redditor):
+    if (
+        (hasattr(redditor, 'is_blocked') and redditor.is_blocked == True)
+        or
+        (hasattr(redditor, 'is_suspended') and redditor.is_suspended == True)
+    ):
+        print(f'########{username} IS A BLOCKED/SUSPENDED ACCOUNT##########')
+        return True
+    else:
+        return False
+
 # build database
 conn = sql.connect('data.db')
 
@@ -108,12 +119,7 @@ for user in disallowed_users:
 for username in usernames:
     print(f'######### BEGINNING LOOP FOR u/{username} #########')
     redditor = reddit.redditor(username)
-    if (
-        (hasattr(redditor, 'is_blocked') and redditor.is_blocked == True) 
-        or 
-        (hasattr(redditor, 'is_suspended') and redditor.is_suspended == True)
-        ):
-        print(f'SKIPPING {username}, AS THEY ARE BLOCKED/SUSPENDED')
+    if user_is_removed(redditor):
         continue
     for post in redditor.submissions.new():
         # if post.fullname in postids: 
@@ -140,6 +146,8 @@ for username in usernames:
         for comment in post.comments.list():
             # if comment.fullname in postids:
             #     continue
+            if user_is_removed(comment.author):
+                continue
             conn.execute('''
                 insert or ignore into post (
                     postid, author, submitted_at, post_type, post_parent,
