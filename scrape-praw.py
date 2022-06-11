@@ -5,7 +5,7 @@ import datetime as dt
 
 # set up logging
 handler = logging.StreamHandler()
-logging_level = logging.Info
+logging_level = logging.INFO
 handler.setLevel(logging_level)
 for logger_name in ("praw", "prawcore"):
     logger = logging.getLogger(logger_name)
@@ -30,7 +30,7 @@ def user_is_removed(redditor):
         or
         (hasattr(redditor, 'is_suspended') and redditor.is_suspended == True)
     ):
-        print(f'########{redditor.name} IS A BLOCKED/SUSPENDED ACCOUNT##########')
+        print(f'\n######## {redditor.name} IS A BLOCKED/SUSPENDED ACCOUNT ##########\n')
         return True
     else:
         return False
@@ -52,7 +52,6 @@ def progress_bar(items, item, fill, length):
     fill_amount = round((length-2) * progress)
     space = length - fill_amount
     return f'[{fill * fill_amount}{" " * space}]'
-
 
 
 # build database
@@ -79,7 +78,7 @@ def create_tables(conn):
             post_parent text, 
             post_title text, 
             post_content text, 
-            foreign key(author) references user(userid),
+            foreign key(author) references user(username),
             foreign key(post_parent) references post(postid),
             unique(postid)
         )
@@ -97,37 +96,46 @@ if refresh:
         and 
         len(conn.execute('select * from user').fetchall()) == 0
     )
+    # add first user if the table is empty
+    # if len(conn.execute('select * from user').fetchall()) == 0:
+    first = reddit.redditor("ButterscotchDue3724")
+    conn.execute(
+        '''
+            insert or ignore into user(userid, username, created_at) 
+            values (:fullname, :name, :created_utc)
+        ''', {
+            "fullname": first.fullname, 
+            "name": first.name, 
+            "created_utc": timestamp_to_datetime(first.created_utc)
+        }
+    )
+    conn.commit()
 else:
     create_tables(conn)
 
-# add first user if the table is empty
-# if len(conn.execute('select * from user').fetchall()) == 0:
-first = reddit.redditor("ButterscotchDue3724")
-conn.execute(
-    '''
-        insert or ignore into user(userid, username, created_at) 
-        values (:fullname, :name, :created_utc)
-    ''', {
-        "fullname": first.fullname, 
-        "name": first.name, 
-        "created_utc": timestamp_to_datetime(first.created_utc)
-    }
-)
-conn.commit()
 
 usernames = [i[0] for i in conn.execute(
     '''
         select distinct username 
         from post 
-        join user on user.userid = post.author 
-        group by userid
+        join user on user.username = post.author 
+        group by user.username
         having count(*) < 50
     ''').fetchall()
 ]
 
-disallowed_users = ['wikipedia_answer_bot']
+disallowed_users = [
+    'wikipedia_answer_bot', 
+    'AutoModerator', 
+    'mamnonsaomai', 
+    'Philip_Jeffries',
+    'Panda_Triple7',
+    'OllieOllieOakTree',
+    'JamesWasilHasReddit'
+]
 for user in disallowed_users:
-    usernames.remove(user)
+    if user in usernames:
+        usernames.remove(user)
 
 update_readme(conn)
 
@@ -135,10 +143,14 @@ for username in usernames:
     redditor = reddit.redditor(username)
     if user_is_removed(redditor):
         continue
-    print(f'''
-######### BEGINNING LOOP FOR u/{username:<20} ################
-######### PROGRESS: {progress_bar(usernames, username, 'X', 31)} ################''')
-    for post in redditor.submissions.new():
+    print(
+f'''######### BEGINNING LOOP FOR u/{username:<20} ################
+######### PROGRESS: {progress_bar(usernames, username, 'X', 29)} ################'''
+    )
+    posts = redditor.submissions.new()
+    num_posts = 0
+    for post in posts:
+        # print(f'Saving post {post.fullname}')
         conn.execute('''
             insert or ignore into post (
                 postid, author, submitted_at, post_type, post_parent,
@@ -149,16 +161,18 @@ for username in usernames:
             )
         ''', {
             "fullname": post.fullname,
-            "author": post.author.fullname,
+            "author": post.author.name,
             "created_utc": timestamp_to_datetime(post.created_utc),
             "title": post.title,
             "selftext": post.selftext
         })
         conn.commit()
-
+        num_posts += 1
         if post.num_comments == 0: 
             continue
-        for comment in post.comments.list():
+        comments = post.comments.list()
+        num_comments = 0
+        for comment in comments:
             if user_is_removed(comment.author):
                 continue
             conn.execute('''
@@ -171,12 +185,13 @@ for username in usernames:
                 )
             ''', {
                 "fullname": comment.fullname,
-                "author": comment.author.fullname,
+                "author": comment.author.name,
                 "created_utc": timestamp_to_datetime(comment.created_utc),
                 "parent_id": comment.parent_id,
                 "body": comment.body
             })
             conn.commit()
+            num_comments += 1
             author = comment.author
             conn.execute('''
                 insert or ignore into user (userid, username, created_at)
@@ -187,4 +202,6 @@ for username in usernames:
                 "created_utc": timestamp_to_datetime(author.created_utc)
             })
             conn.commit()
+        print(f'Saw {num_comments} comments')
+    print(f'Saw {num_posts} posts made by u/{username}')
 
