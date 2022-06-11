@@ -3,6 +3,7 @@
 *.csv
 *.db
 *.html
+*.ini
 data
 .vscode
 __pycache__
