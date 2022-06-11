@@ -16,13 +16,7 @@ for logger_name in ("praw", "prawcore"):
 with open('secrets.txt') as f:
     lines = [i.strip().split(': ')[1] for i in f.readlines()]
 
-reddit = praw.Reddit(
-    client_id = lines[0],
-    client_secret = lines[1],
-    password=lines[3],
-    user_agent=f'chrome:{lines[2]}:v0.1 (by /u/{lines[2]})',
-    username = lines[2],
-)
+reddit = praw.Reddit("sus-account-search", config_interpolation="basic")
 
 assert reddit.user.me() == lines[2]
 
