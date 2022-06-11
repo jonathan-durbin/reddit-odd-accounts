@@ -91,7 +91,17 @@ conn.commit()
 
 postids = [i[0] for i in conn.execute('select postid from post').fetchall()]
 
-for username in [i[0] for i in conn.execute('select username from user').fetchall()]:
+usernames = [i[0] for i in conn.execute(
+    '''
+        select distinct username 
+        from post 
+        join user on user.userid = post.author 
+        group by userid
+        having count(*) < 50
+    ''').fetchall()
+]
+
+for username in usernames:
     print(f'######### BEGINNING LOOP FOR u/{username} #########')
     redditor = reddit.redditor(username)
     for post in redditor.submissions.new():
