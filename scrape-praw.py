@@ -73,27 +73,28 @@ else:
     create_tables(conn)
 
 # add first user if the table is empty
-if len(conn.execute('select * from user').fetchall()) == 0:
-    first = reddit.redditor("ButterscotchDue3724")
-    conn.execute(
-        '''
-            insert or ignore into user(userid, username, created_at) 
-            values (:fullname, :name, :created_utc)
-        ''', {
-            "fullname": first.fullname, 
-            "name": first.name, 
-            "created_utc": dt.date.fromtimestamp(first.created_utc).isoformat()
-        }
-    )
-    conn.commit()
+# if len(conn.execute('select * from user').fetchall()) == 0:
+first = reddit.redditor("ButterscotchDue3724")
+conn.execute(
+    '''
+        insert or ignore into user(userid, username, created_at) 
+        values (:fullname, :name, :created_utc)
+    ''', {
+        "fullname": first.fullname, 
+        "name": first.name, 
+        "created_utc": dt.date.fromtimestamp(first.created_utc).isoformat()
+    }
+)
+conn.commit()
 
 postids = [i[0] for i in conn.execute('select postid from post').fetchall()]
 
 for username in [i[0] for i in conn.execute('select username from user').fetchall()]:
+    print(f'######### BEGINNING LOOP FOR u/{username} #########')
     redditor = reddit.redditor(username)
     for post in redditor.submissions.new():
-        if post.fullname in postids: 
-            continue
+        # if post.fullname in postids: 
+        #     continue
         conn.execute('''
             insert or ignore into post (
                 postid, author, submitted_at, post_type, post_parent,
@@ -111,8 +112,8 @@ for username in [i[0] for i in conn.execute('select username from user').fetchal
         })
         conn.commit()
         for comment in post.comments.list():
-            if comment.fullname in postids:
-                continue
+            # if comment.fullname in postids:
+            #     continue
             conn.execute('''
                 insert or ignore into post (
                     postid, author, submitted_at, post_type, post_parent,
