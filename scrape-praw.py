@@ -101,7 +101,7 @@ usernames = [i[0] for i in conn.execute(
     ''').fetchall()
 ]
 
-disallowed_users = ['wikipedia_answer_bot', 'Shakespeare-Bot']
+disallowed_users = ['wikipedia_answer_bot']
 for user in disallowed_users:
     usernames.remove(user)
 
