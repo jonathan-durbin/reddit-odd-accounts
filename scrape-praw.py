@@ -44,6 +44,15 @@ def update_readme(conn):
     with open('README.md', 'w') as f:
         f.writelines(lines)
 
+def progress_bar(items, item, fill, length):
+    # assumes a list with unique elements
+    i = items.index(item)
+    progress = 1-(len(items)-(i+1))/len(items)
+    fill_amount = round((length-2) * progress)
+    space = length - fill_amount
+    return f'[{fill * fill_amount}{" " * space}]'
+
+
 
 # build database
 conn = sql.connect('data.db')
@@ -124,10 +133,12 @@ for user in disallowed_users:
 update_readme(conn)
 
 for username in usernames:
-    print(f'######### BEGINNING LOOP FOR u/{username} #########')
     redditor = reddit.redditor(username)
     if user_is_removed(redditor):
         continue
+    print(f'''
+######### BEGINNING LOOP FOR u/{username:<20} ################
+######### PROGRESS: {progress_bar(usernames, username, 'X', 31)} ################''')
     for post in redditor.submissions.new():
         # if post.fullname in postids: 
         #     continue
