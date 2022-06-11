@@ -60,7 +60,7 @@ def create_tables(conn):
         '''
     )
 
-refresh = True
+refresh = False
 
 if refresh:
     conn.execute('drop table post')
