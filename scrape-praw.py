@@ -175,13 +175,3 @@ for username in usernames:
             })
             conn.commit()
 
-# reddit.redditor("").comments
-# reddit.redditor("").submissions
-# reddit.redditor("").created_utc
-# reddit.redditor("").submissions.new()
-#   for post in ^: 
-#       post.author, post.comments, post.created_utc, post.fullname
-#       post.selftext, post.title
-# reddit.redditor("").fullname
-# submission.comments.list()
-
