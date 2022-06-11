@@ -34,6 +34,17 @@ def user_is_removed(redditor):
     else:
         return False
 
+def update_readme(conn):
+    with open('README.md', 'r') as f:
+        lines = f.readlines()
+    total_posts = conn.execute('select count(*) from post').fetchall()[0][0]
+    total_accounts = conn.execute('select count(*) from user').fetchall()[0][0]
+    lines[7] = f'{total_posts:,} Posts\n'
+    lines[8] = f'{total_accounts:,} Accounts\n'
+    with open('README.md', 'w') as f:
+        f.writelines(lines)
+
+
 # build database
 conn = sql.connect('data.db')
 
@@ -109,6 +120,8 @@ usernames = [i[0] for i in conn.execute(
 disallowed_users = ['wikipedia_answer_bot']
 for user in disallowed_users:
     usernames.remove(user)
+
+update_readme(conn)
 
 for username in usernames:
     print(f'######### BEGINNING LOOP FOR u/{username} #########')
