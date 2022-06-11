@@ -5,8 +5,8 @@ A simple repo containing code used to search Reddit for accounts that behave a v
 At the time of the most recent update, this script has found:
 
 ```
-10,002 Posts
-1,406 Accounts
+29,729 Posts
+1,736 Accounts
 ```
 
 # Background
