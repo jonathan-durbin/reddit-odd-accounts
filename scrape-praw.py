@@ -101,6 +101,10 @@ usernames = [i[0] for i in conn.execute(
     ''').fetchall()
 ]
 
+disallowed_users = ['wikipedia_answer_bot']
+for user in disallowed_users:
+    usernames.remove(user)
+
 for username in usernames:
     print(f'######### BEGINNING LOOP FOR u/{username} #########')
     redditor = reddit.redditor(username)
@@ -123,6 +127,9 @@ for username in usernames:
             "selftext": post.selftext
         })
         conn.commit()
+        
+        if post.num_comments == 0: 
+            continue
         for comment in post.comments.list():
             # if comment.fullname in postids:
             #     continue
