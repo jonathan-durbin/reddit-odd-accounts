@@ -1,0 +1,11 @@
+;; remove ".sample" from filename to use
+[bot1]
+client_id=revokedpDQy3xZ
+client_secret=revokedoqsMk5nHCJTHLrwgvHpr
+password=invalidht4wd50gk
+username=fakebot1
+
+bot_name=MyBot
+bot_version=1.2.3
+bot_author=MyUser
+user_agent=script:%(bot_name)s:v%(bot_version)s (by u/%(bot_author)s)
