@@ -108,7 +108,12 @@ for user in disallowed_users:
 for username in usernames:
     print(f'######### BEGINNING LOOP FOR u/{username} #########')
     redditor = reddit.redditor(username)
-    if redditor.is_blocked or redditor.is_suspended:
+    if (
+        (hasattr(redditor, 'is_blocked') and redditor.is_blocked == True) 
+        or 
+        (hasattr(redditor, 'is_suspended') and redditor.is_suspended == True)
+        ):
+        print(f'SKIPPING {username}, AS THEY ARE BLOCKED/SUSPENDED')
         continue
     for post in redditor.submissions.new():
         # if post.fullname in postids: 
