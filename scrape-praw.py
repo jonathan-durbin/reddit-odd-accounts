@@ -26,6 +26,8 @@ reddit = praw.Reddit(
 
 assert reddit.user.me() == lines[2]
 
+def timestamp_to_datetime(t):
+    return dt.datetime.fromtimestamp(t).isoformat()
 
 # build database
 conn = sql.connect('data.db')
@@ -58,7 +60,7 @@ def create_tables(conn):
         '''
     )
 
-refresh = False
+refresh = True
 
 if refresh:
     conn.execute('drop table post')
@@ -82,7 +84,7 @@ conn.execute(
     ''', {
         "fullname": first.fullname, 
         "name": first.name, 
-        "created_utc": dt.date.fromtimestamp(first.created_utc).isoformat()
+        "created_utc": timestamp_to_datetime(first.created_utc)
     }
 )
 conn.commit()
@@ -106,7 +108,7 @@ for username in [i[0] for i in conn.execute('select username from user').fetchal
         ''', {
             "fullname": post.fullname,
             "author": post.author.fullname,
-            "created_utc": dt.date.fromtimestamp(post.created_utc).isoformat(),
+            "created_utc": timestamp_to_datetime(post.created_utc),
             "title": post.title,
             "selftext": post.selftext
         })
@@ -125,7 +127,7 @@ for username in [i[0] for i in conn.execute('select username from user').fetchal
             ''', {
                 "fullname": comment.fullname,
                 "author": comment.author.fullname,
-                "created_utc": dt.date.fromtimestamp(comment.created_utc).isoformat(),
+                "created_utc": timestamp_to_datetime(comment.created_utc),
                 "parent_id": comment.parent_id,
                 "body": comment.body
             })
@@ -137,7 +139,7 @@ for username in [i[0] for i in conn.execute('select username from user').fetchal
             ''', {
                 "fullname": author.fullname,
                 "name": author.name,
-                "created_utc": dt.date.fromtimestamp(author.created_utc).isoformat()
+                "created_utc": timestamp_to_datetime(author.created_utc)
             })
             conn.commit()
 
