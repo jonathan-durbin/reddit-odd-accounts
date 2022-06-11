@@ -5,8 +5,8 @@ A simple repo containing code used to search Reddit for accounts that behave a v
 At the time of the most recent update, this script has found:
 
 ```
- Posts
- Accounts
+10,002 Posts
+1,406 Accounts
 ```
 
 # Background
@@ -39,8 +39,8 @@ What I want to know is: **Why**?
 
 I have a few ideas.
 
-    - To generate fake engagement on accounts that will one day be sold to advertisers.
-    - Someone somewhere is testing a method of fake account creation and interaction.
-        - Maybe to sell the accounts one day.
-        - Once the method is perfected, maybe they will start reaching out and interacting with real users for advertisement or to (if you will allow me to put on my tin hat for a moment) affect the sentiment surrounding various topics on Reddit.
+- To generate fake engagement on accounts that will one day be sold to advertisers.
+- Someone somewhere is testing a method of fake account creation and interaction.
+    - Maybe to sell the accounts one day.
+    - Once the method is perfected, maybe they will start reaching out and interacting with real users for advertisement or to (if you will allow me to put on my tin hat for a moment) affect the sentiment surrounding various topics on Reddit.
 
