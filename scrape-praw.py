@@ -3,6 +3,7 @@ import sqlite3 as sql
 import logging
 import datetime as dt
 import re
+import random
 
 # set up logging
 handler = logging.StreamHandler()
@@ -155,7 +156,7 @@ for username in usernames:
 f'''######### BEGINNING LOOP FOR u/{username:<20} ################
 ######### PROGRESS: {progress_bar(usernames, username, 'X', 29)} ################'''
     )
-    posts = redditor.submissions.new()
+    posts = redditor.submissions.new(limit=50)
     num_posts = 0
     for post in posts:
         # print(f'Saving post {post.fullname}')
