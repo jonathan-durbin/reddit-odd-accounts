@@ -43,3 +43,31 @@ def progress_bar(items, item, fill, length):
     space = length - fill_amount
 
     return f'[{fill * fill_amount}{" " * space}]'
+
+def create_tables(conn):
+    conn.execute(
+        '''
+        create table if not exists user(
+            userid text primary key, 
+            username text,
+            created_at text,
+            unique(userid)
+        )
+        '''
+    )
+    conn.execute(
+        '''
+        create table if not exists post(
+            postid text primary key, 
+            author text, 
+            submitted_at text,
+            post_type text, 
+            post_parent text, 
+            post_title text, 
+            post_content text, 
+            foreign key(author) references user(username),
+            foreign key(post_parent) references post(postid),
+            unique(postid)
+        )
+        '''
+    )

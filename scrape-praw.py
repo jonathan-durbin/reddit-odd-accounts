@@ -27,40 +27,12 @@ assert reddit.user.me() == lines[2]
 # build database
 conn = sql.connect('data.db')
 
-def create_tables(conn):
-    conn.execute(
-        '''
-        create table if not exists user(
-            userid text primary key, 
-            username text,
-            created_at text,
-            unique(userid)
-        )
-        '''
-    )
-    conn.execute(
-        '''
-        create table if not exists post(
-            postid text primary key, 
-            author text, 
-            submitted_at text,
-            post_type text, 
-            post_parent text, 
-            post_title text, 
-            post_content text, 
-            foreign key(author) references user(username),
-            foreign key(post_parent) references post(postid),
-            unique(postid)
-        )
-        '''
-    )
-
 refresh = False
 
 if refresh:
     conn.execute('drop table post')
     conn.execute('drop table user')
-    create_tables(conn)
+    util.create_tables(conn)
     assert (
         len(conn.execute('select * from post').fetchall()) == 0
         and 
