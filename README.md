@@ -5,8 +5,8 @@ A simple repo containing code used to search Reddit for accounts that behave a v
 At the time of the most recent update, this script has found:
 
 ```
-155,056 Posts
-6,309 Accounts
+205,436 Posts
+7,091 Accounts
 ```
 
 # Background
@@ -44,3 +44,11 @@ I have a few ideas.
     - Maybe to sell the accounts one day.
     - Once the method is perfected, maybe they will start reaching out and interacting with real users for advertisement or to (if you will allow me to put on my tin hat for a moment) affect the sentiment surrounding various topics on Reddit.
 
+# What does the code do?
+The script above uses PRAW, the Reddit API wrapper. It starts with one username and saves the most recent posts to a local SQLite3 database. If any of the posts have comments on them, they and their authors get stored in the database as well. 
+
+When the script is ran again, it checks the database for any users who have less than 10 associated posts. The idea is that these users would be those for whom I only have comments. 
+
+The script then gets a number of the most recent posts from these usernames, checking for and saving comments to the database as it goes. 
+
+Each time the script is executed (so far) the list of usernames continues to grow. This also means the amount of time it takes for the script to be completed increases drastically.
