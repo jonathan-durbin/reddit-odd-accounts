@@ -128,6 +128,8 @@ usernames = [i[0] for i in conn.execute(
         having count(postid) < 10
     ''').fetchall()
 ]
+random.shuffle(usernames)
+print(f'Searching {len(usernames)} usernames.')
 
 disallowed_users = [
     'wikipedia_answer_bot', 
