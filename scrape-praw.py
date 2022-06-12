@@ -144,7 +144,7 @@ update_readme(conn)
 
 for username in usernames:
     # ignore usernames that don't fit the default username naming convention
-    if re.match('^(?!((.*?)[-_]?(.*?)[-_]?(\d+))).*', username):
+    if re.match('^(?!(([A-Z].*?)[-_]?([A-Z].*?)[-_]?(\d+))).*', username):
         continue
     redditor = reddit.redditor(username)
     if user_is_removed(redditor):
