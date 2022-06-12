@@ -122,11 +122,10 @@ else:
 
 usernames = [i[0] for i in conn.execute(
     '''
-        select distinct username 
+        select distinct author 
         from post 
-        join user on user.username = post.author 
-        group by user.username
-        having count(*) < 20
+        group by author
+        having count(postid) < 10
     ''').fetchall()
 ]
 
