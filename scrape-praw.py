@@ -3,7 +3,7 @@ import sqlite3 as sql
 import logging
 import re
 import random
-from . import util
+import util
 
 # set up logging
 handler = logging.StreamHandler()
@@ -73,7 +73,7 @@ for user in disallowed_users:
     if user in usernames:
         usernames.remove(user)
 
-util.update_readme(conn)
+util.update_readme(conn, './README.md')
 
 for username in usernames:
     # ignore usernames that don't fit the default username naming convention
