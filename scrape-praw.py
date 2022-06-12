@@ -1,7 +1,6 @@
 import praw
 import sqlite3 as sql
 import logging
-import datetime as dt
 import re
 import random
 from . import util
@@ -19,9 +18,7 @@ for logger_name in ("praw", "prawcore"):
 # authenticate
 with open('secrets.txt') as f:
     lines = [i.strip().split(': ')[1] for i in f.readlines()]
-
 reddit = praw.Reddit("sus-account-search", config_interpolation="basic")
-
 assert reddit.user.me() == lines[2]
 
 # build database
@@ -52,8 +49,6 @@ if refresh:
         }
     )
     conn.commit()
-else:
-    create_tables(conn)
 
 
 usernames = [i[0] for i in conn.execute(
