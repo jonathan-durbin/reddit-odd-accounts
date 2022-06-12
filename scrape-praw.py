@@ -2,6 +2,7 @@ import praw
 import sqlite3 as sql
 import logging
 import datetime as dt
+import re
 
 # set up logging
 handler = logging.StreamHandler()
@@ -29,8 +30,13 @@ def user_is_removed(redditor):
         (hasattr(redditor, 'is_blocked') and redditor.is_blocked == True)
         or
         (hasattr(redditor, 'is_suspended') and redditor.is_suspended == True)
+        and
+        hasattr(redditor, 'name')
     ):
         print(f'\n######## {redditor.name} IS A BLOCKED/SUSPENDED ACCOUNT ##########\n')
+        return True
+    elif hasattr(redditor, 'name') != True:  # Could also do `redditor is None`
+        print(f'\n######## FOUND ACCOUNT THAT WAS REMOVED ##########\n')
         return True
     else:
         return False
@@ -120,7 +126,7 @@ usernames = [i[0] for i in conn.execute(
         from post 
         join user on user.username = post.author 
         group by user.username
-        having count(*) < 50
+        having count(*) < 20
     ''').fetchall()
 ]
 
@@ -129,9 +135,7 @@ disallowed_users = [
     'AutoModerator', 
     'mamnonsaomai', 
     'Philip_Jeffries',
-    'Panda_Triple7',
-    'OllieOllieOakTree',
-    'JamesWasilHasReddit'
+    'Panda_Triple7'
 ]
 for user in disallowed_users:
     if user in usernames:
@@ -140,6 +144,9 @@ for user in disallowed_users:
 update_readme(conn)
 
 for username in usernames:
+    # ignore usernames that don't fit the default username naming convention
+    if re.match('^(?!((.*?)[-_]?(.*?)[-_]?(\d+))).*', username):
+        continue
     redditor = reddit.redditor(username)
     if user_is_removed(redditor):
         continue
