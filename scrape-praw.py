@@ -132,6 +132,9 @@ f'''######### BEGINNING LOOP FOR u/{username:<20} ################
             conn.commit()
             num_comments += 1
             author = comment.author
+            # ignore author if they are already in the DB
+            if author.name in usernames:
+                continue
             conn.execute('''
                 insert or ignore into user (userid, username, created_at)
                 values (:fullname, :name, :created_utc)
