@@ -73,12 +73,18 @@ disallowed_users = [
 for user in disallowed_users:
     if user in usernames:
         usernames.remove(user)
+    conn.execute('delete from user where username = :user', {"user": user})
+    conn.execute('delete from post where author = :user', {"user": user})
+    conn.commit()
 
 util.update_readme(conn, './README.md')
 
 for username in usernames:
     # ignore usernames that don't fit the default username naming convention
     if util.username_check(username):
+        conn.execute('delete from user where username = :user', {"user": username})
+        conn.execute('delete from post where author = :user', {"user": username})
+        conn.commit()
         continue
     redditor = reddit.redditor(username)
     if util.user_is_removed(redditor):
@@ -114,6 +120,9 @@ f'''######### BEGINNING LOOP FOR u/{username:<20} ################
         num_comments = 0
         for comment in comments:
             if util.user_is_removed(comment.author) or util.username_check(username):
+                conn.execute('delete from user where username = :user', {"user": username})
+                conn.execute('delete from post where author = :user', {"user": username})
+                conn.commit()
                 continue
             conn.execute('''
                 insert or ignore into post (
