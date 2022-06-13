@@ -67,7 +67,8 @@ disallowed_users = [
     'AutoModerator', 
     'mamnonsaomai', 
     'Philip_Jeffries',
-    'Panda_Triple7'
+    'Panda_Triple7',
+    'CamT106'
 ]
 for user in disallowed_users:
     if user in usernames:
