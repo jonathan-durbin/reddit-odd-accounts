@@ -68,7 +68,8 @@ disallowed_users = [
     'mamnonsaomai', 
     'Philip_Jeffries',
     'Panda_Triple7',
-    'CamT106'
+    'CamT106',
+    'NoDetective5471'
 ]
 for user in disallowed_users:
     if user in usernames:
@@ -116,6 +117,8 @@ f'''######### BEGINNING LOOP FOR u/{username:<20} ################
         num_posts += 1
         if post.num_comments == 0: 
             continue
+        
+        post.comments.replace_more(limit=None)
         comments = post.comments.list()
         num_comments = 0
         for comment in comments:
