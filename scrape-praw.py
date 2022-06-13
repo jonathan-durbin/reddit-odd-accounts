@@ -78,7 +78,7 @@ util.update_readme(conn, './README.md')
 
 for username in usernames:
     # ignore usernames that don't fit the default username naming convention
-    if re.match('^(?!(([A-Z].*?)[-_]?([A-Z].*?)[-_]?(\d+))).*', username):
+    if util.username_check(username):
         continue
     redditor = reddit.redditor(username)
     if util.user_is_removed(redditor):
@@ -113,7 +113,7 @@ f'''######### BEGINNING LOOP FOR u/{username:<20} ################
         comments = post.comments.list()
         num_comments = 0
         for comment in comments:
-            if util.user_is_removed(comment.author):
+            if util.user_is_removed(comment.author) or util.username_check(username):
                 continue
             conn.execute('''
                 insert or ignore into post (

@@ -1,4 +1,5 @@
 import datetime as dt
+import re
 
 def timestamp_to_datetime(t):
     return dt.datetime.fromtimestamp(t).isoformat()
@@ -71,3 +72,6 @@ def create_tables(conn):
         )
         '''
     )
+
+def username_check(username):
+    return re.match('^(?!(([A-Z].*?)[-_]?([A-Z].*?)[-_]?(\d+))).*', username)
