@@ -3,6 +3,7 @@
 *.csv
 *.db
 *.db.backup
+*.db-journal
 *.html
 *.ini
 data
