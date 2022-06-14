@@ -69,11 +69,22 @@ disallowed_users = [
     'Philip_Jeffries',
     'Panda_Triple7',
     'CamT106',
-    'NoDetective5471'
+    'NoDetective5471',
+    'RDB96'
 ]
 for user in disallowed_users:
     if user in usernames:
         usernames.remove(user)
+    # delete any comments made on posts by a disallowed user.
+    posts_with_parent = conn.execute('''
+        select p.* 
+        from post p 
+        left join post p1 on p.post_parent = p1.postid 
+        where p1.author = :parent''', {'parent': user}
+    ).fetchall()
+    for i in posts_with_parent:
+        conn.execute('delete from post where postid = :i', {"i":i[0]})
+    # delete disallowed users and their posts
     conn.execute('delete from user where username = :user', {"user": user})
     conn.execute('delete from post where author = :user', {"user": user})
     conn.commit()
